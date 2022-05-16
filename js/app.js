@@ -57,9 +57,26 @@ function init() {
     gl.enableVertexAttribArray(vPosition);
     gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
 
+    // *** Send texture data to the GPU ***
+    let tBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, tBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoordsArray), gl.STATIC_DRAW);
+
+    // *** Define the form of the data ***
+    let vTexCoord = gl.getAttribLocation(program, "vTexCoord");
+    gl.enableVertexAttribArray(vTexCoord);
+    gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
+
     // *** Get a pointer for the model viewer
     modelViewMatrix = gl.getUniformLocation(program, "modelViewMatrix");
     ctm = mat4.create();
+
+    // Set the image for the texture
+    let image = new Image();
+    image.src = 'texture.png'
+    image.onload = function () {
+        configureTexture(image);
+    }
 
     // *** Create the event listeners for the buttons
     document.getElementById("rotateX").onclick = function () {
